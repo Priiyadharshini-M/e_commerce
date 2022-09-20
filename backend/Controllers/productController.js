@@ -37,7 +37,8 @@ const viewAllProducts = async(req,res) => {
         if(product.length<=0){
             throw "No product found"
         }
-        return res.status(constants.SUCCESS).json({product})
+        const productCount = product.length
+        return res.status(constants.SUCCESS).json({product, productCount})
     }
     catch (err){
         return res.status(constants.NOT_FOUND).json({err})
@@ -56,4 +57,19 @@ const viewProduct = async(req,res) => {
         return res.status(constants.NOT_FOUND).json({err})
     }
 }
-module.exports = { addProduct, viewAllProducts, viewProduct }
+
+const viewFilteredProducts = async(req,res) => {
+    let product
+    try{
+        const product = await  Product.find({productType: req.body.productType})
+        if(product.length<=0){
+            throw "No product found"
+        }
+        const productCount = product.length
+        return res.status(constants.SUCCESS).json({product, productCount})
+    }
+    catch (err){
+        return res.status(constants.NOT_FOUND).json({err})
+    }
+}
+module.exports = { addProduct, viewAllProducts, viewProduct, viewFilteredProducts }
