@@ -1,4 +1,5 @@
 const mongoose=require('mongoose')
+const Cart = require('./cartModel')
 
 const schema=mongoose.Schema;
 const userSchema=new schema({

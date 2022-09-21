@@ -1,17 +1,22 @@
 const Product = require('../Models/productModel')
+const ProductType = require('../Models/productType')
 const { productValidation } = require('../Validation/validation')
 const constants = require('../Constants/constants')
 
 const addProduct = async(req, res) => {
     try {
         const result = await productValidation.validateAsync(req.body, { abortEarly: false })
-        let product;
+        let product, productType;
         const existproduct = await Product.findOne({productName: req.body.productName, productType: req.body.productType, productCategory: req.body.productCategory })
         if (existproduct)
             throw "This product already exists in this category."
         product = new Product(result)
+        productType = new ProductType({
+            productType: req.body.productType
+        })
 
         await product.save()
+        await productType.save()
         const message = "Product added successfully"
         return res.status(constants.CREATED).json({product, message})
     }
@@ -72,4 +77,15 @@ const viewFilteredProducts = async(req,res) => {
         return res.status(constants.NOT_FOUND).json({err})
     }
 }
-module.exports = { addProduct, viewAllProducts, viewProduct, viewFilteredProducts }
+
+const getProductTypes = async(req,res) => {
+    let productType
+    try{
+        const productType = await ProductType.find()
+        return res.status(constants.SUCCESS).json({productType})
+    }
+    catch (err){
+        return res.status(constants.NOT_FOUND).json({err})
+    }
+}
+module.exports = { addProduct, viewAllProducts, viewProduct, viewFilteredProducts, getProductTypes }
