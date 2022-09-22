@@ -5,12 +5,12 @@ const ObjectId = require('mongoose').Types.ObjectId
 const addToCart = async (req, res) => {
     try {
         let cart;
-        const existproduct = await Cart.findOne({ userId: req.params.userId, productId: req.params.productId })
+        const existproduct = await Cart.findOne({ userId: req.body.userId, productId: req.body.productId })
         if (existproduct)
             throw "This product already exists in your cart."
         cart = new Cart({
             userId: req.body.userId,
-            productId: req.params.productId,
+            productId: req.body.productId,
             quantity: req.body.quantity
         })
 
@@ -26,7 +26,7 @@ const addToCart = async (req, res) => {
 const viewCart = async (req, res) => {
     try {
         let cart;
-        cart = await Cart.find()
+        cart = await Cart.find({userId:req.params.id}).populate({ path: 'productId'})
         if (cart.length <= 0) {
             throw "No products found in cart"
         }
@@ -38,26 +38,38 @@ const viewCart = async (req, res) => {
     }
 }
 
-// const updateCart = async (req, res) => {
-//     try {
-//         let cart;
-//         if (!ObjectId.isValid(req.params.id)) {
-//             throw "No cart"
-//         }
-//         cart = await Cart.findByIdAndUpdate(req.params.id, )
-//         cart = new Cart({
-//             userId: req.body.userId,
-//             productId: req.params.productId,
-//             quantity: req.body.quantity
-//         })
+const updateCart = async (req, res) => {
+    try {
+        let cart;
+        if (!ObjectId.isValid(req.params.id)) {
+            throw "No cart"
+        }
+        cart = await Cart.findByIdAndUpdate(req.params.id, {quantity: req.body.quantity})
+        
+        await cart.save()
+        const message = "Updated quantity"
+        return res.status(constants.CREATED).json({ cart, message })
+    }
+    catch (err) {
+        return res.status(constants.INTERNAL_SERVER_ERROR).json({ err })
+    }
+}
 
-//         await cart.save()
-//         const message = "Added to cart successfully"
-//         return res.status(constants.CREATED).json({ cart, message })
-//     }
-//     catch (err) {
-//         return res.status(constants.INTERNAL_SERVER_ERROR).json({ err })
-//     }
-// }
+const removeFromCart = async (req, res) => {
+    try {
+        let cart;
+        if (!ObjectId.isValid(req.params.id)) {
+            throw "No cart"
+        }
+        cart = await Cart.findByIdAndDelete(req.params.id)
+        
+        await cart.save()
+        const message = "Removed from cart"
+        return res.status(constants.CREATED).json({ cart, message })
+    }
+    catch (err) {
+        return res.status(constants.INTERNAL_SERVER_ERROR).json({ err })
+    }
+}
 
-module.exports = { addToCart, viewCart }
+module.exports = { addToCart, viewCart, updateCart, removeFromCart }
