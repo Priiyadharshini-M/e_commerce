@@ -1,4 +1,5 @@
 const Cart = require('../Models/cartModel')
+const Product = require('../Models/productModel')
 const constants = require('../Constants/constants')
 const ObjectId = require('mongoose').Types.ObjectId
 
@@ -44,6 +45,15 @@ const updateCart = async (req, res) => {
         if (!ObjectId.isValid(req.params.id)) {
             throw "No cart"
         }
+        const productId = await Cart.find({_id:req.params.id},{productId:1, _id:0})
+        const stock = await Product.find({_id:productId[0].productId},{stock:1, _id:0})
+
+        if(req.body.quantity > stock[0].stock){
+            throw "Sorry we don't have any more pieces for this item"
+        }
+        if(req.body.quantity < 1){
+            throw "Minimum 1 piece required."
+        }
         cart = await Cart.findByIdAndUpdate(req.params.id, {quantity: req.body.quantity})
         
         await cart.save()
@@ -62,8 +72,7 @@ const removeFromCart = async (req, res) => {
             throw "No cart"
         }
         cart = await Cart.findByIdAndDelete(req.params.id)
-        
-        await cart.save()
+    
         const message = "Removed from cart"
         return res.status(constants.CREATED).json({ cart, message })
     }
