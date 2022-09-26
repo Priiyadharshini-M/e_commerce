@@ -58,7 +58,7 @@ const updateCart = async (req, res) => {
         
         await cart.save()
         const message = "Updated quantity"
-        return res.status(constants.CREATED).json({ cart, message })
+        return res.status(constants.SUCCESS).json({ cart, message })
     }
     catch (err) {
         return res.status(constants.INTERNAL_SERVER_ERROR).json({ err })
@@ -74,7 +74,7 @@ const removeFromCart = async (req, res) => {
         cart = await Cart.findByIdAndDelete(req.params.id)
     
         const message = "Removed from cart"
-        return res.status(constants.CREATED).json({ cart, message })
+        return res.status(constants.SUCCESS).json({ cart, message })
     }
     catch (err) {
         return res.status(constants.INTERNAL_SERVER_ERROR).json({ err })

@@ -2,6 +2,7 @@ const Product = require('../Models/productModel')
 const ProductType = require('../Models/productType')
 const { productValidation } = require('../Validation/validation')
 const constants = require('../Constants/constants')
+const ObjectId = require('mongoose').Types.ObjectId
 
 const addProduct = async(req, res) => {
     try {
@@ -88,4 +89,18 @@ const getProductTypes = async(req,res) => {
         return res.status(constants.NOT_FOUND).json({err})
     }
 }
-module.exports = { addProduct, viewAllProducts, viewProduct, viewFilteredProducts, getProductTypes }
+
+const updateProduct = async(req,res) => {
+    let product
+    try{
+        if (!ObjectId.isValid(req.params.id)) {
+            throw "No such product"
+        }
+        product = await Product.findByIdAndUpdate(req.params._id, { $set: { stock: req.body.stock } }, { new: true })
+        return res.status(constants.SUCCESS).json({product})
+    }
+    catch(err){
+        return res.status(constants.NOT_FOUND).json({err})
+    }
+}
+module.exports = { addProduct, viewAllProducts, viewProduct, viewFilteredProducts, getProductTypes, updateProduct }
