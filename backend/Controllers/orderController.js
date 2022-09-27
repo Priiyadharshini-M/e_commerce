@@ -1,4 +1,5 @@
 const Order = require('../Models/orderModel')
+const User = require('../Models/userModel')
 const constants = require('../Constants/constants')
 const ObjectId = require('mongoose').Types.ObjectId
 
@@ -23,8 +24,14 @@ const orders = async (req, res) => {
 
 const viewOrder = async (req, res) => {
     try {
-        let order;
+        let order, user;
+        user = await User.find({_id:req.params.id},{role:1})
+        if(user[0].role === constants.USER){
         order = await Order.find({userId:req.params.id}).populate({ path: 'productId'})
+        }
+        if(user[0].role === constants.ADMIN){
+            order = await Order.find().populate({ path: 'productId'})
+        }
         if (order.length <= 0) {
             throw "No orders found"
         }
@@ -42,7 +49,7 @@ const cancelOrder = async (req, res) => {
         if (!ObjectId.isValid(req.params.id)) {
             throw "No orders"
         }
-        order = await Order.findByIdAndUpdate(req.params.id, {status: 'Cancelled'})
+        order = await Order.findByIdAndUpdate(req.params.id, {status: constants.CANCELLED})
     
         const message = "Order cancelled"
         return res.status(constants.SUCCESS).json({ order, message })

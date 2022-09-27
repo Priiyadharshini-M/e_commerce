@@ -1,10 +1,11 @@
 const express = require('express')
 const { addToCart, viewCart, updateCart, removeFromCart } = require('../Controllers/cartController')
+const { isAuthenticatedUser } = require('../Middleware/auth')
 const cartRouter = express.Router()
 
-cartRouter.post('/',addToCart)
-cartRouter.get('/:id',viewCart)
-cartRouter.put('/:id',updateCart)
-cartRouter.delete('/:id',removeFromCart)
+cartRouter.post('/', isAuthenticatedUser, addToCart)
+cartRouter.get('/:id', isAuthenticatedUser, viewCart)
+cartRouter.put('/:id', isAuthenticatedUser, updateCart)
+cartRouter.delete('/:id', isAuthenticatedUser, removeFromCart)
 
 module.exports = cartRouter

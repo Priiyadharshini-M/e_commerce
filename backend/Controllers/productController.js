@@ -96,7 +96,7 @@ const updateProduct = async(req,res) => {
         if (!ObjectId.isValid(req.params.id)) {
             throw "No such product"
         }
-        product = await Product.findByIdAndUpdate(req.params._id, { $set: { stock: req.body.stock } }, { new: true })
+        product = await Product.findByIdAndUpdate(req.params.id, { $set: { stock: req.body.stock } }, { new: true })
         return res.status(constants.SUCCESS).json({product})
     }
     catch(err){
