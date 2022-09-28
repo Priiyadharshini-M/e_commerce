@@ -30,7 +30,7 @@ const viewOrder = async (req, res) => {
         order = await Order.find({userId:req.params.id}).populate({ path: 'productId'})
         }
         if(user[0].role === constants.ADMIN){
-            order = await Order.find().populate({ path: 'productId'})
+            order = await Order.find().populate([{ path: 'productId'},{path : 'userId'}])
         }
         if (order.length <= 0) {
             throw "No orders found"
@@ -46,10 +46,10 @@ const viewOrder = async (req, res) => {
 const cancelOrder = async (req, res) => {
     try {
         let order;
-        if (!ObjectId.isValid(req.params.id)) {
+        if (!ObjectId.isValid(req.params.orderId)) {
             throw "No orders"
         }
-        order = await Order.findByIdAndUpdate(req.params.id, {status: constants.CANCELLED})
+        order = await Order.findByIdAndUpdate(req.params.orderId, {status: constants.CANCELLED})
     
         const message = "Order cancelled"
         return res.status(constants.SUCCESS).json({ order, message })

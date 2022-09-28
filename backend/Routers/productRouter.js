@@ -8,6 +8,6 @@ productRouter.get('/',viewAllProducts)
 productRouter.get('/:id',viewProduct)
 productRouter.get('/types/pro',getProductTypes,)
 productRouter.post('/filteredProducts',viewFilteredProducts)
-productRouter.put('/:id', isAuthenticatedUser, updateProduct)
+productRouter.put('/:productId', isAuthenticatedUser, updateProduct)
 
 module.exports = productRouter

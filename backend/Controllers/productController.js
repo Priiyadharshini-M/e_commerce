@@ -93,10 +93,10 @@ const getProductTypes = async(req,res) => {
 const updateProduct = async(req,res) => {
     let product
     try{
-        if (!ObjectId.isValid(req.params.id)) {
+        if (!ObjectId.isValid(req.params.productId)) {
             throw "No such product"
         }
-        product = await Product.findByIdAndUpdate(req.params.id, { $set: { stock: req.body.stock } }, { new: true })
+        product = await Product.findByIdAndUpdate(req.params.productId, { $set: { stock: req.body.stock } }, { new: true })
         return res.status(constants.SUCCESS).json({product})
     }
     catch(err){

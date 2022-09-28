@@ -13,7 +13,7 @@ const registerValidation = joi.object({
         .pattern(new RegExp('^[6-9]{1}[0-9]{9}$'))
         .required(),
     password: joi.string()
-        .min(8)
+        .min(5)
         .max(12)
         .required(),
     confirmPassword: joi.ref('password')

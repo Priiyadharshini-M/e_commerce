@@ -42,10 +42,10 @@ const viewCart = async (req, res) => {
 const updateCart = async (req, res) => {
     try {
         let cart;
-        if (!ObjectId.isValid(req.params.id)) {
+        if (!ObjectId.isValid(req.params.cartId)) {
             throw "No cart"
         }
-        const productId = await Cart.find({_id:req.params.id},{productId:1, _id:0})
+        const productId = await Cart.find({_id:req.params.cartId},{productId:1, _id:0})
         const stock = await Product.find({_id:productId[0].productId},{stock:1, _id:0})
 
         if(req.body.quantity > stock[0].stock){
@@ -54,7 +54,7 @@ const updateCart = async (req, res) => {
         if(req.body.quantity < 1){
             throw "Minimum 1 piece required."
         }
-        cart = await Cart.findByIdAndUpdate(req.params.id, {quantity: req.body.quantity})
+        cart = await Cart.findByIdAndUpdate(req.params.cartId, {quantity: req.body.quantity})
         
         await cart.save()
         const message = "Updated quantity"
@@ -68,10 +68,10 @@ const updateCart = async (req, res) => {
 const removeFromCart = async (req, res) => {
     try {
         let cart;
-        if (!ObjectId.isValid(req.params.id)) {
+        if (!ObjectId.isValid(req.params.cartId)) {
             throw "No cart"
         }
-        cart = await Cart.findByIdAndDelete(req.params.id)
+        cart = await Cart.findByIdAndDelete(req.params.cartId)
     
         const message = "Removed from cart"
         return res.status(constants.SUCCESS).json({ cart, message })

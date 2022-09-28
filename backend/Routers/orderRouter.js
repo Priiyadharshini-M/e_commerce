@@ -5,6 +5,6 @@ const orderRouter = express.Router()
 
 orderRouter.post('/',isAuthenticatedUser,orders)
 orderRouter.get('/:id',isAuthenticatedUser,viewOrder)
-orderRouter.put('/:id',isAuthenticatedUser,cancelOrder)
+orderRouter.put('/:orderId',isAuthenticatedUser,cancelOrder)
 
 module.exports = orderRouter
