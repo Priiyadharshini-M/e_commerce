@@ -9,7 +9,6 @@ const addProduct = async(req, res) => {
         const result = await productValidation.validateAsync(req.body, { abortEarly: false })
         let product, productType;
         result.productImage = req.body.productImage.split(', ')
-        console.log("images",result)
         const existproduct = await Product.findOne({productName: req.body.productName, productType: req.body.productType, productCategory: req.body.productCategory })
         if (existproduct)
             throw "This product already exists in this category."
