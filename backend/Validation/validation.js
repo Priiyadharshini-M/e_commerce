@@ -25,8 +25,7 @@ const productValidation = joi.object({
                     .max(20)
                     .pattern(new RegExp('^[a-zA-Z ]+$'))
                     .required(),
-    productImage: joi.string()
-                     .required(),
+    productImage: joi.required(),
     description: joi.string()
                      .min(10)
                      .max(200)

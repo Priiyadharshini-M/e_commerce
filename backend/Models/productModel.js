@@ -8,7 +8,7 @@ const productSchema=new schema({
         minlength:3
     },
     productImage:{
-        type:String,
+        type:Array,
         required:true
     },
     description:{

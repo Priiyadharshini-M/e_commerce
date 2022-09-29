@@ -54,7 +54,7 @@ const updateCart = async (req, res) => {
         if(req.body.quantity < 1){
             throw "Minimum 1 piece required."
         }
-        cart = await Cart.findByIdAndUpdate(req.params.cartId, {quantity: req.body.quantity})
+        cart = await Cart.findByIdAndUpdate(req.params.cartId, {quantity: req.body.quantity},{ new: true })
         
         await cart.save()
         const message = "Updated quantity"
