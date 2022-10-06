@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
+const jwtDecode=require('jwt-decode')
 require('dotenv').config()
 const constants = require('../Constants/constants')
-const jwtDecode=require('jwt-decode')
 
 const isAuthenticatedUser = async (req, res, next) => {
   try {
@@ -9,7 +9,7 @@ const isAuthenticatedUser = async (req, res, next) => {
     if(token === 'null'){
       throw "Access denied , Please login"
     }
-    const data = jwt.verify(token, process.env.ACCESS_TOKEN)
+    const data = jwt.verify(token, process.env.SECRET_TOKEN)
     if(req.params.id && data.id !== req.params.id){
         throw "You don't have access to other user account"
     }
@@ -27,7 +27,7 @@ const isAuthorizedUser = async (req, res, next) => {
     if(tokenData.role!==constants.ADMIN){
         throw "You can't access this page.Authorization failed"
     }
-    const data = jwt.verify(token, process.env.ACCESS_TOKEN)
+    const data = jwt.verify(token, process.env.SECRET_TOKEN)
   }
   catch (err) {
     return res.status(constants.UNAUTHORIZED).json({ err })

@@ -1,7 +1,7 @@
+const ObjectId = require('mongoose').Types.ObjectId
 const Cart = require('../Models/cartModel')
 const Product = require('../Models/productModel')
 const constants = require('../Constants/constants')
-const ObjectId = require('mongoose').Types.ObjectId
 
 const addToCart = async (req, res) => {
     try {

@@ -1,8 +1,8 @@
+const ObjectId = require('mongoose').Types.ObjectId
 const Product = require('../Models/productModel')
 const ProductType = require('../Models/productType')
 const { productValidation } = require('../Validation/validation')
 const constants = require('../Constants/constants')
-const ObjectId = require('mongoose').Types.ObjectId
 
 const addProduct = async(req, res) => {
     try {
@@ -24,14 +24,8 @@ const addProduct = async(req, res) => {
     }
     catch (err) {
         if (err.isJoi === true) {
-            const errors = []
-            err.details.forEach(detail => {
-                let error = {
-                    [detail.path]: detail.message
-                }
-                errors.push(error)
-            })
-            return res.status(constants.BAD_REQUEST).json({errors})
+            const errors = constants.joiError(err)
+            return res.status(constants.BAD_REQUEST).json({ errors })
         }
         return res.status(constants.INTERNAL_SERVER_ERROR).json({ err })
     }

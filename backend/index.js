@@ -1,8 +1,8 @@
 const mongoose = require('mongoose')
 const express = require("express")
 require('dotenv/config')
-const app = express()
 const cors=require('cors')
+const app = express()
 
 const user = require('./Routers/userRouter')
 const product = require('./Routers/productRouter')
@@ -23,6 +23,6 @@ app.use('/product',product)
 app.use('/cart',cartRouter)
 app.use('/order',orderRouter)
 
-const server = app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT, () => {
     console.log('Server is running at port :', process.env.PORT)
 })

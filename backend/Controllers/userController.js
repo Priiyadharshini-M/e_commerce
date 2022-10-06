@@ -1,9 +1,8 @@
-const User = require('../Models/userModel')
-const constants = require('../Constants/constants')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
-const jwtDecode=require('jwt-decode')
-const { registerValidation } = require('../Validation/validation')
+const User = require('../Models/userModel')
+const constants = require('../Constants/constants')
+const { registerValidation, loginValidation } = require('../Validation/validation')
 
 const signUpUser = async (req, res) => {
 
@@ -31,14 +30,8 @@ const signUpUser = async (req, res) => {
     }
     catch (err) {
         if (err.isJoi === true) {
-            const errors = []
-            err.details.forEach(detail => {
-                let error = {
-                    [detail.path]: detail.message
-                }
-                errors.push(error)
-            })
-            return res.status(constants.BAD_REQUEST).json({errors})
+            const errors = constants.joiError(err)
+            return res.status(constants.BAD_REQUEST).json({ errors })
         }
         return res.status(constants.INTERNAL_SERVER_ERROR).json({ err })
     }
@@ -47,7 +40,8 @@ const signUpUser = async (req, res) => {
 const userLogin = async (req, res) => {
    
     try {
-        const user = await User.findOne({ userEmail: req.body.userEmail })
+        const result = await loginValidation.validateAsync(req.body, { abortEarly: false })
+        const user = await User.findOne({ userEmail: result.userEmail })
 
         if (!user) {
             throw "This email doesn't exist"
@@ -57,20 +51,14 @@ const userLogin = async (req, res) => {
               throw "Invalid Credentials"
         }
         let payload = { userEmail: req.body.userEmail, role: user.role, id: user._id, userName: user.userName }
-        let token = jwt.sign(payload, process.env.ACCESS_TOKEN)
+        let token = jwt.sign(payload, process.env.SECRET_TOKEN)
         const message = "Successfully logged in"
         res.status(constants.SUCCESS).json({ user, token, message })
     }
     catch (err) {
         if (err.isJoi === true) {
-            const errors = []
-            err.details.forEach(detail => {
-                let error = {
-                    [detail.path]: detail.message
-                }
-                errors.push(error)
-            })
-            return res.status(constants.BAD_REQUEST).json(errors)
+            const errors = constants.joiError(err)
+            return res.status(constants.BAD_REQUEST).json({ errors })
         }
         return res.status(constants.INTERNAL_SERVER_ERROR).json({ err })
     }

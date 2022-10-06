@@ -19,6 +19,16 @@ const registerValidation = joi.object({
     confirmPassword: joi.ref('password')
 })
 
+const loginValidation = joi.object({
+    userEmail: joi.string()
+        .pattern(new RegExp('^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,4}$'))
+        .required(),
+    password: joi.string()
+        .min(5)
+        .max(12)
+        .required()
+})
+
 const productValidation = joi.object({
     productName: joi.string()
                     .min(3)
@@ -48,4 +58,4 @@ const productValidation = joi.object({
               .required()
 })
 
-module.exports = { registerValidation, productValidation }
+module.exports = { registerValidation, productValidation, loginValidation }
